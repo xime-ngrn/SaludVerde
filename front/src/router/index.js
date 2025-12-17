@@ -14,8 +14,10 @@ import Blog from '@/views/Blog.vue';
 import RegistroContable from '@/views/RegistroContable.vue';
 import Reportes from '@/views/Reportes.vue';
 import Usuario from '@/views/Usuario.vue';
+import MetaAhorro from '@/views/MetaAhorro.vue';
 
 import Error from '@/views/Error.vue';
+import { compile } from 'vue';
 
 // Definir las rutas
 const routes = [
@@ -32,6 +34,7 @@ const routes = [
   { path: '/registro-contable', name: 'RegistroContable', component: RegistroContable },
   { path: '/reportes', name: 'Reportes', component: Reportes },
   { path: '/usuario', name: 'Usuario', component: Usuario },
+  { path: '/meta-ahorro', name: 'MetaAhorro', component: MetaAhorro },
   { path: '/error', name: 'Error', component: Error },
   { path: '/:pathMatch(.*)*', redirect: '/error' }
 ];

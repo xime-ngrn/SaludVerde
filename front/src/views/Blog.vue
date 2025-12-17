@@ -59,6 +59,14 @@ const comments = ref([
                 <hr />
                 <section class="comments-section">
                     <h3>Comentarios</h3>
+
+                    <div class="agregar">
+                        <form class="form" @submit.prevent="agregarComentario" autocomplete="off" >
+                            <label for="comment">Agrega un comentario:</label>
+                            <textarea></textarea>
+                        </form>
+                    </div>
+
                     <div class="comments">
                         <Comment
                             v-for="(comment, idx) in comments"
@@ -114,10 +122,25 @@ const comments = ref([
     flex-direction: column;
     gap: 1rem;
 }
+
+.agregar {
+    width: 100%;
+    margin: 20px 0;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    padding-left: 10px;
+    text-align: left;
+}
+
 p {
     padding-left: 20px;
 }
 h3 {
+    text-align: center;
     margin: 0 0 20px;
 }
 </style>

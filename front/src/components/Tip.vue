@@ -63,7 +63,6 @@ const tips = ref([
     border-radius: 15px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 30px 10px;
 }
 img {
     width: 100px;

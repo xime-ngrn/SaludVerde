@@ -13,10 +13,15 @@ function openLink() {
         window.open(props.link, '_blank');
     }
 }
+
+function abrirModal() {
+    
+}
+
 </script>
 
 <template>
-    <div class="card">
+    <div class="card" @click="abrirModal">
         <div class="header">
             <img src="@/assets/images/tip.png" alt="Card Image" class="card-image"/>
             <h3 class="card-title">{{ props.title }}</h3>

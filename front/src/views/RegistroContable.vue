@@ -46,62 +46,64 @@ function submitForm(e) {
     <Menu />
     <div class="home-container">
         <Options />
+
         <div class="home">
             <h3>Agregar Registro Contable</h3>
-            <div class="registro">
-                <form @submit="submitForm" autocomplete="off">
-                    <div>
-                        <label for="titulo">Título</label>
-                        <input v-model="form.titulo" type="text" id="titulo" name="titulo" required />
-                    </div>
-                    <div>
-                        <label for="fecha">Fecha</label>
-                        <input v-model="form.fecha" type="date" id="fecha" name="fecha" required />
-                    </div>
-                    <div>
-                        <label for="mes">Mes</label>
-                        <select v-model="form.mes" id="mes" name="mes" required>
-                            <option disabled value="">Selecciona un mes</option>
-                            <option value="enero">Enero</option>
-                            <option value="febrero">Febrero</option>
-                            <option value="marzo">Marzo</option>
-                            <option value="abril">Abril</option>
-                            <option value="mayo">Mayo</option>
-                            <option value="junio">Junio</option>
-                            <option value="julio">Julio</option>
-                            <option value="agosto">Agosto</option>
-                            <option value="septiembre">Septiembre</option>
-                            <option value="octubre">Octubre</option>
-                            <option value="noviembre">Noviembre</option>
-                            <option value="diciembre">Diciembre</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="monto">Monto</label>
-                        <input v-model="form.monto" type="number" id="monto" name="monto" min="0" step="0.01" required />
-                    </div>
-                    <div>
-                        <label for="categoria">Categoría</label>
-                        <select v-model="form.categoria" id="categoria" name="categoria" required>
-                            <option disabled value="">Selecciona una categoría</option>
-                            <option value="alimentacion">Alimentación</option>
-                            <option value="servicios">Servicios</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="educacion">Educación</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="tipo">Tipo</label>
-                        <select v-model="form.tipo" id="tipo" name="tipo" required>
-                            <option disabled value="">Selecciona un tipo</option>
-                            <option value="ingreso">Ingreso</option>
-                            <option value="gasto">Gasto</option>
-                        </select>
-                    </div>
-                    <button type="submit">Agregar Registro</button>
-                </form>
-                <div v-if="message" class="message">{{ message }}</div>
+
+            <div class="container">
+                <div class="form-section">
+                    <form class="form" @submit="submitForm" autocomplete="off">
+                        <div class="grid-form">
+                            <div class="form-group">
+                                <label for="titulo">Título</label>
+                                <input v-model="form.titulo" type="text" id="titulo" class="form-control" name="titulo" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha">Fecha</label>
+                                <input v-model="form.fecha" type="date" id="fecha" class="form-control" name="fecha" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="mes">Registro</label>
+                                <select v-model="form.mes" id="mes" class="form-control" name="mes" required>
+                                    <option disabled value="">Selecciona un Registro</option>
+                                    <option value="mayo">Mayo</option>
+                                    <option value="junio">Junio</option>
+                                    <option value="julio">Julio</option>
+                                    <option value="agosto">Agosto</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="monto">Monto</label>
+                                <input v-model="form.monto" type="number" id="monto" class="form-control" name="monto" min="0" step="0.01" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="categoria">Categoría</label>
+                                <select v-model="form.categoria" id="categoria" class="form-control" name="categoria" required>
+                                    <option disabled value="">Selecciona una categoría</option>
+                                    <option value="alimentacion">Alimentación</option>
+                                    <option value="servicios">Servicios</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="educacion">Educación</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo">Tipo</label>
+                                <select v-model="form.tipo" id="tipo" class="form-control" name="tipo" required>
+                                    <option disabled value="">Selecciona un tipo</option>
+                                    <option value="ingreso">Ingreso</option>
+                                    <option value="gasto">Gasto</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="buttons">
+                            <button type="submit" class="btn-primary">Agregar Registro</button>
+                        </div>
+                    </form>
+                    <div v-if="message" class="message">{{ message }}</div>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -122,11 +124,11 @@ function submitForm(e) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 1.5rem;
     color: #334155;
     overflow: hidden;
     padding: 20px;
     box-sizing: border-box;
+    padding: 40px;
 }
 .registro {
     background: #ffffff;
@@ -139,52 +141,92 @@ function submitForm(e) {
     margin-top: 20px;
     box-sizing: border-box;
 }
-.registro form {
-    display: grid;
-    /* Define la cuadrícula para 2 columnas de igual ancho */
-    grid-template-columns: 1fr 1fr;
-    /* Espacio entre las columnas y las filas */
-    gap: 20px;
+
+.container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    border-style: dashed;
+    border-color: var(--color-1);   
 }
-.registro form > div {
-    margin-bottom: 0; /* Lo gestiona el 'gap' del grid */
-}
-/* Asegura que el botón de envío ocupe ambas columnas */
-.registro form button[type="submit"] {
-    grid-column: 1 / -1; /* Ocupa desde la primera hasta la última columna */
-    width: auto;
-}
-.registro label {
-    display: block;
-    margin-bottom: 0.25rem;
-    font-size: 1rem;
-}
-.registro input,
-.registro select {
+
+.form-section {
     width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 6px;
-    border: 1px solid #cbd5e1;
-    box-sizing: border-box;
 }
-button[type="submit"] {
-    background: var(--color-1, #38bdf8);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
+
+.form {
+    width: 100%;
 }
+
+.grid-form {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    max-width: 300px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+    font-size: 1rem;
+    background: #ffffff;
+    color: #333;
+}
+
+.form-control:focus {
+    border-color: #4ea5ff;
+    outline: none;
+    box-shadow: 0 0 6px rgba(78, 165, 255, 0.6);
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+}
+
+.general-error {
+    display: block;
+    color: #e74c3c;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 0.95rem;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 25px;
+}
+
 .message {
     margin-top: 1rem;
     color: #16a34a;
     font-size: 1rem;
 }
 
-/* Media Query para hacer el formulario de 1 columna en pantallas pequeñas */
 @media (max-width: 600px) {
     .registro form {
         grid-template-columns: 1fr; /* Una sola columna en dispositivos pequeños */

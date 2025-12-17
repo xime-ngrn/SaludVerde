@@ -7,7 +7,9 @@ import EditProfileModal from '@/components/EditarUsuario.vue';
 
 // Datos del usuario (simulados)
 const userData = reactive({
-    nombre: 'Juan Pérez',
+    nombre: 'Juan',
+    apellido: 'Pérez',
+    username: 'Juan23',
     email: 'juan.perez@example.com',
     fechaRegistro: '15 de Marzo, 2023',
     vocacion: 'Estudiante',
@@ -25,15 +27,6 @@ const openModal = () => {
 const closeModal = () => {
     isModalOpen.value = false;
 };
-
-// Lógica para actualizar los datos desde el modal (ejemplo)
-const handleUpdate = (newUserData) => {
-    // Aquí actualizas tu store o realizas la petición a la API
-    // Por ahora, solo actualizamos el estado local
-    Object.assign(userData, newUserData);
-    closeModal();
-};
-
 </script>
 
 <template>
@@ -47,8 +40,9 @@ const handleUpdate = (newUserData) => {
 
             <button @click="openModal" class="btn-primary">Modificar Información</button>
             
-            <div class="info">
-                <p><strong>Nombre:</strong> {{ userData.nombre }}</p>
+            <div class="container">
+                <p><strong>Nombre:</strong> {{ userData.nombre }} {{ userData.apellido }}</p>
+                <p><strong>Nombre de Usuario:</strong> {{ userData.username }}</p>
                 <p><strong>Email:</strong> {{ userData.email }}</p>
                 <p><strong>Fecha de Registro:</strong> {{ userData.fechaRegistro }}</p>
                 <p><strong>Vocación:</strong> {{ userData.vocacion }}</p>
@@ -86,6 +80,17 @@ const handleUpdate = (newUserData) => {
     font-size: 1rem; /* Ajuste para mejor lectura */
     color: #334155;
 }
+.container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
 
 h3 {
     align-self: center;
@@ -93,5 +98,6 @@ h3 {
 
 .btn-primary {
     align-self: flex-end;
+    margin-right: 100px;
 }
 </style>

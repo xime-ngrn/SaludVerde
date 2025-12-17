@@ -17,6 +17,7 @@ const errors = reactive({
     username: '',
     password: ''
 });
+
 const generalError = ref('');
 
 function regresar() {
@@ -57,8 +58,9 @@ function iniciar() {
         <div class="signin-container">
             <h2>Inicio de sesión</h2>
             <p class="subtitle">Bienvenido de vuelta, ingresa tus datos para iniciar sesión.</p>
+
             <div class="form-section">
-                <form class="form" @submit.prevent="iniciar" autocomplete="off">
+                <form class="form" @submit.prevent="iniciar" autocomplete="off" >
                     <div class="grid-form">
                         <div class="form-group">
                             <label for="username">Nombre de usuario</label>
@@ -85,11 +87,13 @@ function iniciar() {
                             <span v-if="errors.password" class="error">{{ errors.password }}</span>
                         </div>
                     </div>
+
                     <span v-if="generalError" class="general-error">{{ generalError }}</span>
                     <div class="buttons">
                         <button class="btn-cancel" @click="regresar" type="button">Cancelar</button>
                         <button class="btn-primary" type="submit">Iniciar Sesión</button>
                     </div>
+
                 </form>
             </div>
         </div>

@@ -37,5 +37,6 @@ import Tip from '@/components/Tip.vue';
     font-size: 1.5rem;
     color: #334155;
     overflow: hidden;
+    padding: 40px;
 }
 </style>

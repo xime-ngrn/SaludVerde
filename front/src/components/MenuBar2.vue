@@ -1,23 +1,16 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-// const route = useRoute(); // No usado en isActive
 const mobileMenuOpen = ref(false);
-// 1. Nuevo estado para el menú desplegable del perfil
 const profileMenuOpen = ref(false);
 
 const nombre = computed(() => {
-    // Aquí podrías obtener el nombre del usuario desde un store o API
     return 'Usuario';
 });
 
 function isActive(path) {
-    // 💡 Recomendación: Usar useRoute().path es más directo
-    // return useRoute().path === path;
-    // Si estás en el componente Menu, debes obtener la ruta actual.
-    // Asumiendo que `router.path` es un typo y querías la ruta actual:
     const currentRoute = router.currentRoute.value;
     return currentRoute.path === path;
 }
@@ -30,7 +23,7 @@ function toggleProfileMenu() {
 // 4. Funciones de navegación
 function verUsuario() {
     profileMenuOpen.value = false;
-    router.push('/perfil'); // Redirige a la página de perfil
+    router.push('/usuario');
 }
 
 function cerrarSesion() {
@@ -105,10 +98,10 @@ function nosotros() {
             </div>
             
             <div v-if="profileMenuOpen" class="profile-dropdown">
-                <button @click="verUsuario" class="dropdown-item">
+                <button @click="verUsuario" class="btn-primary">
                     Ver Perfil
                 </button>
-                <button @click="cerrarSesion" class="dropdown-item logout">
+                <button @click="cerrarSesion" class="btn-cancel">
                     Cerrar Sesión
                 </button>
             </div>
@@ -190,6 +183,7 @@ function nosotros() {
 .menu-container .router-link-exact-active {
     background: var(--color-2, #4fd1c4);
     color: #222;
+    display: block;
 }
 
 .profile {
@@ -220,6 +214,26 @@ function nosotros() {
     font-weight: 600;
     color: #fff;
     white-space: nowrap;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 70%;
+    right: -5%;
+    transform: translateX(-50%);
+    width: 200px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px 0;
+}
+button {
+    max-width: 75%;
+    margin: 5px 0;
 }
 
 @media (max-width: 900px) {
