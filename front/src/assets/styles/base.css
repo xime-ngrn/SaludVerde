@@ -43,7 +43,7 @@ h1 {
 
 h2 {
   text-align: center;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 800;
   margin-bottom: 36px;
   color: var(--color-1);
@@ -53,9 +53,9 @@ h2 {
 h3{
   font-size: var(--text-subtitle);
   font-weight: 600;
-  padding: 20px;
-  margin-bottom: 15px;
-  text-align: center;
+  padding: 10px;
+  margin: 20px 0;
+  text-align: left;
   color: rgb(33, 32, 32);
   align-content: center;
 }
@@ -103,10 +103,10 @@ a::after, .link::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -2px;          /* separación respecto al texto */
+  bottom: -2px;
   width: 0%;
-  height: 2px;           /* grosor de la línea */
-  background: white;     /* color de la línea */
+  height: 2px;
+  background: white;
   transition: width 0.3s ease;
 }
 
@@ -117,6 +117,22 @@ a:hover::after, .link:hover::after {
 .active-link {
   color: #6c757d; /* Color cuando está activa */
   font-weight: bold; /* Destacar el link activo */
+}
+
+ul {
+  list-style-type: disc;
+  margin: 1rem 45px;
+}
+li {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+  color: #34495e;
+  line-height: 1.6;
+}
+
+strong {
+  color: var(--color-3);
+  font-weight: bold;
 }
 
 .bg1 { background-color: var(--fondo-1); }
@@ -213,19 +229,29 @@ button:focus {
 }
 
 /* Entradas */
-.input {
+input {
   width: 100%;
-  padding: 0.8rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  max-width: 300px;
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
   font-size: var(--text-small);
-  background: var(--fondo-3);
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--color-1);
+  outline: none;
 }
 
 hr {
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 20px 0;
+  width: 90%;
+  height: 3px;
+  margin: 2rem auto;
+  background: var(--color-1);
+  border-radius: 2px;
+  opacity: 0.85;
 }
 
 footer {

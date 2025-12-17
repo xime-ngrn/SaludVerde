@@ -127,7 +127,7 @@ function registrar() {
 }
 
 .register-container {
-    max-width: 900px;
+    min-width: 700px;
     margin: 40px auto;
     padding: 30px;
     background: rgba(255, 255, 255, 0.7);
@@ -138,8 +138,6 @@ function registrar() {
 h2 {
     text-align: center;
     margin-bottom: 10px;
-    font-size: 1.8rem;
-    font-weight: bold;
 }
 
 .subtitle {
@@ -174,6 +172,7 @@ label {
 }
 
 .form-control {
+    max-width: 300px;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #bbb;
@@ -190,8 +189,8 @@ label {
 
 .error {
     color: #e74c3c;
-    font-size: 0.85rem;
-    margin-top: 4px;
+    font-size: 0.65rem;
+    margin: 4px;
     position: absolute;
     bottom: -18px;
     left: 0;
@@ -218,7 +217,7 @@ label {
 
 .buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     margin-top: 25px;
 }

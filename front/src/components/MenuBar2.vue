@@ -6,18 +6,10 @@ const router = useRouter();
 const route = useRoute();
 const mobileMenuOpen = ref(false);
 
-function inicio() {
-    router.push('/');
-}
-function iniciarSesion() {
-    router.push('/login');
-}
-function registrarse() {
-    router.push('/registro');
-}
-function nosotros() {
-    router.push('/nosotros');
-}
+const nombre = computed(() => {
+    // Aquí podrías obtener el nombre del usuario desde un store o API
+    return 'Usuario';
+});
 
 function isActive(path) {
     return route.path === path;
@@ -26,12 +18,6 @@ function isActive(path) {
 
 <template>
     <header class="menu-bar">
-        <div class="logo-container">
-            <img src="@/assets/images/logo.png" alt="Logo" class="logo" @click="inicio" />
-            <button class="mobile-menu-btn" @click="mobileMenuOpen = !mobileMenuOpen">
-                <span :class="{ open: mobileMenuOpen }">&#9776;</span>
-            </button>
-        </div>
         <nav class="menu-container" :class="{ open: mobileMenuOpen }">
             <ul>
                 <li>
@@ -79,9 +65,9 @@ function isActive(path) {
                 </li>
             </ul>
         </nav>
-        <div class="inicio" :class="{ open: mobileMenuOpen }">
-            <button class="btn-primary" @click="iniciarSesion">Iniciar Sesión</button>
-            <button class="btn-secondary" @click="registrarse">Regístrate</button>
+        <div class="profile" :class="{ open: mobileMenuOpen }">
+            <img src="@/assets/images/avatar.png" alt="Mi Perfil" class="avatar-profile" />
+            <p>{{ nombre }}</p>
         </div>
     </header>
 </template>
@@ -93,30 +79,9 @@ function isActive(path) {
     width: 100%;
     max-height: 120px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     position: relative;
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.logo {
-    width: 90px;
-    height: 90px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.3s, background 0.3s;
-    border-radius: 16px;
-}
-
-.logo:hover, .logo:focus {
-    transform: scale(1.12) rotate(-2deg);
-    background: rgba(79, 209, 196, 0.18);
-    box-shadow: 0 4px 16px rgba(79,209,196,0.18);
-    outline: none;
 }
 
 .mobile-menu-btn {
@@ -182,9 +147,10 @@ function isActive(path) {
     color: #222;
 }
 
-.inicio {
+.profile {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-self: center;
     gap: 1rem;
 }
 

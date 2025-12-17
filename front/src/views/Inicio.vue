@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import Menu from '@/components/menuBar.vue';
-import Footer from '@/components/footer.vue';
+import Menu from '@/components/MenuBar.vue';
+import Footer from '@/components/Footer.vue';
 import '@/assets/styles/base.css';
 import router from '@/router';
 
@@ -20,15 +19,15 @@ function registrarse() {
 
       <div class="hero-card">
         <div class="hero-left">
-          <h2>El 75% de los adolescentes no tienen un conocimiento de finanzas personales.</h2>
+          <h2>El 75% de los adolescentes no tienen un conocimiento de finanzas personales</h2>
           <p class="hero-text">
             Aprender a manejar el dinero desde joven es una de las decisiones más inteligentes que puedes tomar.
           </p>
-          <button class="btn-primary" @click="registrarse">Empezar ahora</button>
+          <button class="btn-primary" @click="registrarse">Empieza ahora</button>
         </div>
 
         <div class="hero-right">
-          <img src="@/assets/images/familia.png" class="hero-family" />
+          <img src="@/assets/images/salud-financiera.gif" class="hero-family" />
         </div>
       </div>
     </section>
@@ -79,10 +78,11 @@ function registrarse() {
 
 <style scoped>
 .home-container {
-  max-width: 100;
+  width: 100%;
 }
 
 .hero {
+  width: 100%;
   background: linear-gradient(135deg, #93d2ff 0%, #4fd1c5 100%);
   padding: 40px 20px 40px 20px;
 }
@@ -104,6 +104,7 @@ function registrarse() {
   border-radius: 24px;
   padding: 40px;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
@@ -130,21 +131,54 @@ function registrarse() {
   color: #fff;
   font-weight: 700;
   border: none;
-  border-radius: 12px;
-  padding: 14px 32px;
-  font-size: 18px;
+  border-radius: 16px;
+  padding: 16px 40px;
+  font-size: 20px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(56,120,199,0.15);
-  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(56,120,199,0.18);
+  transition:
+    background 0.4s cubic-bezier(0.4,0,0.2,1),
+    transform 0.25s cubic-bezier(0.4,0,0.2,1),
+    box-shadow 0.25s cubic-bezier(0.4,0,0.2,1),
+    color 0.2s;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(79,209,197,0.15);
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s cubic-bezier(0.4,0,0.2,1), height 0.4s cubic-bezier(0.4,0,0.2,1);
+  z-index: 0;
 }
 
 .btn-primary:hover {
   background: linear-gradient(90deg, #4fd1c5 0%, #3878C7 100%);
-  transform: translateY(-3px) scale(1.03);
+  color: #fff;
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 8px 32px rgba(56,120,199,0.25);
+}
+
+.btn-primary:hover::after {
+  width: 250%;
+  height: 250%;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(56,120,199,0.12);
 }
 
 .hero-right {
-  width: 40%;
+  width: 45%;
   text-align: right;
   padding: 20px;
   display: flex;
@@ -153,9 +187,8 @@ function registrarse() {
 }
 
 .hero-family {
-  width: 260px;
+  width: 300px;
   border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(56,120,199,0.10);
 }
 
 .features {

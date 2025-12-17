@@ -7,6 +7,9 @@ import Home from '@/views/Home.vue';
 import AboutUs from '@/views/Nosotros.vue';
 import AvisoPrivacidad from '@/views/AvisoPrivacidad.vue';
 import Inicio from '@/views/Inicio.vue';
+import TipsFinanzas from '@/views/TipsFinanzas.vue';
+import Inversiones from '@/views/Inversiones.vue';
+import Blog from '@/views/Blog.vue';
 
 import Error from '@/views/Error.vue';
 
@@ -19,6 +22,9 @@ const routes = [
   { path: '/home', name: 'Home', component: Home },
   { path: '/nosotros', name: 'Nosotros', component: AboutUs },
   { path: '/aviso-privacidad', name: 'AvisoPrivacidad', component: AvisoPrivacidad },
+  { path: '/finanzas', name: 'TipsFinanzas', component: TipsFinanzas },
+  { path: '/inversiones', name: 'Inversiones', component: Inversiones },
+  { path: '/blog', name: 'Blog', component: Blog },
   { path: '/error', name: 'Error', component: Error },
   { path: '/:pathMatch(.*)*', redirect: '/error' }
 ];

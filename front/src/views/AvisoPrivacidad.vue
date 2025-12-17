@@ -1,6 +1,6 @@
 <script setup>
-import Menu from '@/components/menuBar.vue';
-import Footer from '@/components/footer.vue';
+import Menu from '@/components/MenuBar.vue';
+import Footer from '@/components/Footer.vue';
 import '@/assets/styles/base.css';
 </script>
 
@@ -20,7 +20,7 @@ import '@/assets/styles/base.css';
                             </p>
                         </div>
                         <div class="intro-image">
-                            <img src="@/assets/images/aviso-privacidad.png" class="hero-family" alt="Aviso Privacidad" />
+                            <img src="@/assets/images/candado.gif" class="hero-family" alt="Aviso Privacidad" />
                         </div>
                     </div>
                     
@@ -89,29 +89,33 @@ import '@/assets/styles/base.css';
     padding: 2rem;
     background: #f8fafc;
     min-height: 100vh;
+    box-sizing: border-box;
 }
 .hero {
     text-align: center;
     margin-bottom: 2rem;
 }
 .hero-card {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 2rem;
-    margin-top: 2rem;
+    text-align: left;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2rem 1.2rem 1.5rem 1.2rem;
 }
 .hero-left {
     flex: 1 1 300px;
     max-width: 950px;
     text-align: left;
-    background: #fff;
     border-radius: 16px;
-    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
-    padding: 2rem;
 }
 .intro {
     display: flex;

@@ -99,7 +99,7 @@ function iniciar() {
 }
 
 .signin-container {
-    max-width: 400px;
+    max-width: 500px;
     margin: 40px auto;
     padding: 30px;
     background: rgba(255, 255, 255, 0.7);
@@ -110,8 +110,6 @@ function iniciar() {
 h2 {
     text-align: center;
     margin-bottom: 10px;
-    font-size: 1.8rem;
-    font-weight: bold;
 }
 
 .subtitle {
