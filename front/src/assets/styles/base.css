@@ -231,7 +231,6 @@ button:focus {
 /* Entradas */
 input {
   width: 100%;
-  max-width: 300px;
   padding: 0.7rem;
   border-radius: 6px;
   border: 1px solid #e0e0e0;

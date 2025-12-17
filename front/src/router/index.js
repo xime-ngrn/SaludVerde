@@ -11,6 +11,10 @@ import TipsFinanzas from '@/views/TipsFinanzas.vue';
 import Inversiones from '@/views/Inversiones.vue';
 import Blog from '@/views/Blog.vue';
 
+import RegistroContable from '@/views/RegistroContable.vue';
+import Reportes from '@/views/Reportes.vue';
+import Usuario from '@/views/Usuario.vue';
+
 import Error from '@/views/Error.vue';
 
 // Definir las rutas
@@ -19,12 +23,15 @@ const routes = [
   { path: '/salud-verde', name: 'Salud Verde', component: Inicio },
   { path: '/login', name: 'LogIn', component: LogIn },
   { path: '/registro', name: 'Register', component: Registro },
-  { path: '/home', name: 'Home', component: Home },
   { path: '/nosotros', name: 'Nosotros', component: AboutUs },
   { path: '/aviso-privacidad', name: 'AvisoPrivacidad', component: AvisoPrivacidad },
   { path: '/finanzas', name: 'TipsFinanzas', component: TipsFinanzas },
   { path: '/inversiones', name: 'Inversiones', component: Inversiones },
   { path: '/blog', name: 'Blog', component: Blog },
+  { path: '/home', name: 'Home', component: Home },
+  { path: '/registro-contable', name: 'RegistroContable', component: RegistroContable },
+  { path: '/reportes', name: 'Reportes', component: Reportes },
+  { path: '/usuario', name: 'Usuario', component: Usuario },
   { path: '/error', name: 'Error', component: Error },
   { path: '/:pathMatch(.*)*', redirect: '/error' }
 ];

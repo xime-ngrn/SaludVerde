@@ -3,8 +3,10 @@ import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
+// const route = useRoute(); // No usado en isActive
 const mobileMenuOpen = ref(false);
+// 1. Nuevo estado para el menú desplegable del perfil
+const profileMenuOpen = ref(false);
 
 const nombre = computed(() => {
     // Aquí podrías obtener el nombre del usuario desde un store o API
@@ -12,8 +14,38 @@ const nombre = computed(() => {
 });
 
 function isActive(path) {
-    return route.path === path;
+    // 💡 Recomendación: Usar useRoute().path es más directo
+    // return useRoute().path === path;
+    // Si estás en el componente Menu, debes obtener la ruta actual.
+    // Asumiendo que `router.path` es un typo y querías la ruta actual:
+    const currentRoute = router.currentRoute.value;
+    return currentRoute.path === path;
 }
+
+// 2. Lógica para abrir/cerrar el menú del perfil
+function toggleProfileMenu() {
+    profileMenuOpen.value = !profileMenuOpen.value;
+}
+
+// 4. Funciones de navegación
+function verUsuario() {
+    profileMenuOpen.value = false;
+    router.push('/perfil'); // Redirige a la página de perfil
+}
+
+function cerrarSesion() {
+    profileMenuOpen.value = false;
+    // Lógica para cerrar la sesión (limpiar tokens, store, etc.)
+    // alert('Sesión cerrada'); 
+    router.push('/login'); // Redirige a la página de inicio de sesión
+}
+
+// Función `nosotros` (asumiendo que faltaba)
+function nosotros() {
+    // Si necesitas hacer algo antes de redirigir a /nosotros
+    router.push('/nosotros');
+}
+
 </script>
 
 <template>
@@ -65,10 +97,23 @@ function isActive(path) {
                 </li>
             </ul>
         </nav>
-        <div class="profile" :class="{ open: mobileMenuOpen }">
-            <img src="@/assets/images/avatar.png" alt="Mi Perfil" class="avatar-profile" />
-            <p>{{ nombre }}</p>
+        
+        <div class="profile-wrapper">
+            <div class="profile" @click="toggleProfileMenu">
+                <img src="@/assets/images/avatar.png" alt="Mi Perfil" class="avatar-profile" />
+                <p>{{ nombre }}</p>
+            </div>
+            
+            <div v-if="profileMenuOpen" class="profile-dropdown">
+                <button @click="verUsuario" class="dropdown-item">
+                    Ver Perfil
+                </button>
+                <button @click="cerrarSesion" class="dropdown-item logout">
+                    Cerrar Sesión
+                </button>
+            </div>
         </div>
+        
     </header>
 </template>
 
@@ -79,6 +124,7 @@ function isActive(path) {
     width: 100%;
     max-height: 120px;
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
     position: relative;
@@ -106,7 +152,6 @@ function isActive(path) {
 
 .menu-container {
     flex-grow: 1;
-    margin-left: 2.5rem;
     transition: max-height 0.3s, opacity 0.3s;
 }
 
@@ -148,10 +193,33 @@ function isActive(path) {
 }
 
 .profile {
+    width: 200px;
     display: flex;
     flex-direction: column;
-    align-self: center;
+    align-items: center;
     gap: 1rem;
+    justify-content: flex-end;
+    text-align: center;
+    margin-left: 60px;
+}
+
+.avatar-profile {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--color-2, #4fd1c4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    object-fit: cover;
+    background: #fff;
+}
+
+.profile p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
 }
 
 @media (max-width: 900px) {

@@ -3,6 +3,12 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const users = ref([
+    { username: 'admin', password: 'admin123' },
+    { username: 'user1', password: 'password1' }
+]);
+
 const form = reactive({
     username: '',
     password: ''
@@ -36,7 +42,9 @@ function iniciar() {
     generalError.value = '';
     if (!validar()) return;
     // Simulación de autenticación
-    if (form.username === 'admin' && form.password === 'admin') {
+    if (form.username === users.value[0].username && form.password === users.value[0].password) {
+        router.push('/home');
+    }else if(form.username === users.value[1].username && form.password === users.value[1].password){
         router.push('/home');
     } else {
         generalError.value = 'Usuario o contraseña incorrectos.';
