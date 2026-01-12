@@ -27,8 +27,8 @@ const fetchReportes = async () => {
 const fetchCategorias = async () => {
     try {
         const [resIngresos, resGastos] = await Promise.all([
-            axios.get('http://127.0.0.1:5000/categorias?tipo=ingreso'),
-            axios.get('http://127.0.0.1:5000/categorias?tipo=gasto')
+            axios.get('api/categorias?tipo=ingreso'),
+            axios.get('api/categorias?tipo=gasto')
         ]);
 
         catIngresos.value = resIngresos.data.categorias;

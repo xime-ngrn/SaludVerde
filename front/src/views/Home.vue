@@ -116,7 +116,7 @@ const fetchData = async () => {
     stats.value.gastosPorCategoria.labels = [];
     
     try {
-        const res = await axios.get(`http://127.0.0.1:5000/obtenerEstadisticas?username=${currentUser}`);
+        const res = await axios.get(`api/obtenerEstadisticas?username=${currentUser}`);
         stats.value = res.data;
     } catch (e) {
         console.error("Error al cargar estadísticas:", e.response?.data || e.message);

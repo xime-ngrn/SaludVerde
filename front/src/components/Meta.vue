@@ -36,7 +36,7 @@ const realizarAbono = async () => {
     if (montoAbono.value <= 0) return alert("Monto inválido");
 
     try {
-        const response = await axios.post('http://127.0.0.1:5000/depositarMeta', {
+        const response = await axios.post('api/depositarMeta', {
             id_meta: parseInt(props.idMeta),
             monto: parseFloat(montoAbono.value)
         });

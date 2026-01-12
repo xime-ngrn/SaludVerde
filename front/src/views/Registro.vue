@@ -37,7 +37,7 @@ function registrar() {
     if (!validateForm()) return;
     
     try {
-        const response = axios.post('http://127.0.0.1:5000/register', form.value);
+        const response = axios.post('api/register', form.value);
         router.push('/login');
     } catch (error) {
         console.error('Error al registrar usuario', error);

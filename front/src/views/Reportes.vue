@@ -12,7 +12,7 @@ const error = ref('');
 
 const fetchReportes = async () => {
     try {
-        const response = await axios.get(`http://127.0.0.1:5000/obtenerReportes?username=${currentUser}`);
+        const response = await axios.get(`api/obtenerReportes?username=${currentUser}`);
         
         // 🔧 CORREGIDO: Procesar los datos para calcular ingresos y gastos
         reportes.value = response.data.reportes.map(reporte => ({
@@ -51,7 +51,7 @@ async function guardarReporte() {
 
     try {
         // 🔧 AGREGADO: Guardar el reporte en el backend
-        const response = await axios.post('http://127.0.0.1:5000/crearReporte', {
+        const response = await axios.post('api/crearReporte', {
             username: currentUser,
             nombre: nuevoReporte.value.title
         });

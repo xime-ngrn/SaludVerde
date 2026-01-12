@@ -7,7 +7,6 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import MySQLdb.cursors
 
-app = Flask(__name__)
 app = Flask(__name__, 
             static_folder='dist/assets', 
             template_folder='dist')

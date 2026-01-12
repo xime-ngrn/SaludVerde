@@ -21,7 +21,7 @@ const fetchMetas = async () => {
 
 const guardarMeta = async () => {
     try {
-        await axios.post('http://127.0.0.1:5000/agregarMeta', {
+        await axios.post('api/agregarMeta', {
             ...nuevaMeta.value,
             username: currentUser
         });

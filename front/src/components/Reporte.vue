@@ -16,7 +16,7 @@ const isModalOpen = ref(false);
 
 const fetchDetalles = async () => {
     try {
-        const res = await axios.get(`http://127.0.0.1:5000/obtenerDetallesReporte?id=${props.idReporte}`);
+        const res = await axios.get(`api/obtenerDetallesReporte?id=${props.idReporte}`);
         detalles.value = res.data; // Registros de la tabla 'Registro'
     } catch (e) {
         console.error("Error al obtener detalles", e);
