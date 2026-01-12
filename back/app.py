@@ -22,8 +22,8 @@ mysql = MySQL(app)
 # Inicio de prueba al backend
 @app.route('/')
 def index():
-    print("Conectado :)")
-    return f"Conectado :)"
+    # Esto sirve el archivo principal de tu Frontend
+    return render_template("index.html")
 
 # Inicio de prueba a la base de datos
 @app.route('/db-test')
