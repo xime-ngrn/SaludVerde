@@ -1,28 +1,20 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { setAuthCookies } from '@/utils/cookies';
 
 const router = useRouter();
-
-const users = ref([
-    { username: 'admin', password: 'admin123' },
-    { username: 'user1', password: 'password1' }
-]);
-
-const form = reactive({
-    username: '',
-    password: ''
-});
-const errors = reactive({
-    username: '',
-    password: ''
-});
 
 const generalError = ref('');
 
 function regresar() {
     router.push('/salud-verde');
 }
+
+const username = ref('')
+const password = ref('')
+const loading = ref(false)
 
 function validar() {
     errors.username = '';
@@ -39,17 +31,28 @@ function validar() {
     return valid;
 }
 
-function iniciar() {
-    generalError.value = '';
-    if (!validar()) return;
-    // Simulación de autenticación
-    if (form.username === users.value[0].username && form.password === users.value[0].password) {
-        router.push('/home');
-    }else if(form.username === users.value[1].username && form.password === users.value[1].password){
-        router.push('/home');
-    } else {
-        generalError.value = 'Usuario o contraseña incorrectos.';
-    }
+const iniciar = async () => {
+  loading.value = true
+  generalError.value = ''
+  
+  try {
+    const response = await axios.post('http://127.0.0.1:5000/login', {
+        username: username.value,
+        password: password.value
+    })
+
+    setAuthCookies(response.data.user.username, response.data.user.nombres)
+
+    router.push('/home');
+  } catch (error) {
+    console.log("--- ERROR COMPLETO ---");
+    console.log("Status:", error.response?.status); // Ver si es 404, 500, etc.
+    console.log("Data:", error.response?.data);     // Ver el mensaje que envió Flask
+    console.log("Config:", error.config);           // Ver a qué URL intentó ir
+    generalError.value = error.response?.data?.message || 'Error de conexión';
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -68,11 +71,10 @@ function iniciar() {
                                 type="text"
                                 id="username"
                                 class="form-control"
-                                v-model="form.username"
+                                v-model="username"
                                 autocomplete="username"
                                 required
                             />
-                            <span v-if="errors.username" class="error">{{ errors.username }}</span>
                         </div>
                         <div class="form-group">
                             <label for="password">Contraseña</label>
@@ -80,11 +82,10 @@ function iniciar() {
                                 type="password"
                                 id="password"
                                 class="form-control"
-                                v-model="form.password"
+                                v-model="password"
                                 autocomplete="current-password"
                                 required
                             />
-                            <span v-if="errors.password" class="error">{{ errors.password }}</span>
                         </div>
                     </div>
 

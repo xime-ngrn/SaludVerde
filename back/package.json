@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "flask": "^0.2.10",
+    "flask-cors": "^0.0.1",
+    "mysql": "^2.18.1"
+  }
+}

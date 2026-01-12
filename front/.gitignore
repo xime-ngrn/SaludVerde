@@ -35,5 +35,17 @@ coverage
 # Vitest
 __screenshots__/
 
+# Entorno virtual
+.env
+back/.env
+back/.env.*
+
+# Variables de entorno
+.env
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+
 test-results/
 playwright-report/

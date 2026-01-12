@@ -1,100 +1,56 @@
 <script setup>
-import { ref } from 'vue'; // Importante importar ref
-import Menu from '@/components/MenuBar2.vue';
+import { ref, onMounted } from 'vue';
+import Menu from '@/components/MenuBar.vue';
 import Options from '@/components/OptionsBar.vue';
 import Meta from '@/components/Meta.vue';
+import { getAuthToken } from '@/utils/cookies';
+import axios from 'axios';
 
-// 1. Datos iniciales con formato de fecha correcto (como Strings)
-const metas = ref([
-    { title: 'Año Nuevo', inicio: '2025-10-25', fin: '2025-12-25', ahorro: 5000, progreso: 2000 },
-    { title: 'Cumpleaños', inicio: '2025-12-10', fin: '2026-05-03', ahorro: 8000, progreso: 0 }
-]);
-
+const metas = ref([]);
+const currentUser = getAuthToken();
 const mostrarModal = ref(false);
 
-// 2. Objeto para la nueva meta
-const nuevaMeta = ref({
-    title: '',
-    inicio: '',
-    fin: '',
-    ahorro: 0,
-    progreso: 0
-});
+const nuevaMeta = ref({ title: '', inicio: '', fin: '', ahorro: 0 });
 
-function abrirModal() {
-    // Reiniciar el formulario al abrir
-    nuevaMeta.value = { title: '', inicio: '', fin: '', ahorro: 0, progreso: 0 };
-    mostrarModal.value = true;
-}
+const fetchMetas = async () => {
+    try {
+        const res = await axios.get(`http://127.0.0.1:5000/obtenerMetas?username=${currentUser}`);
+        metas.value = res.data;
+    } catch (e) { console.error("Error al cargar metas", e); }
+};
 
-function guardarMeta() {
-    if (nuevaMeta.value.title && nuevaMeta.value.ahorro > 0) {
-        // Agregamos la nueva meta al arreglo reactivo
-        metas.value.push({ ...nuevaMeta.value });
-        
-        // Cerramos el modal
+const guardarMeta = async () => {
+    try {
+        await axios.post('http://127.0.0.1:5000/agregarMeta', {
+            ...nuevaMeta.value,
+            username: currentUser
+        });
         mostrarModal.value = false;
-        console.log("Meta de ahorro guardada");
-    }
-}
+        fetchMetas();
+    } catch (e) { alert("Error al guardar"); }
+};
+
+onMounted(fetchMetas);
 </script>
 
 <template>
     <Menu />
-    
     <div class="home-container">
         <Options />
-
         <div class="home">
             <h3>Metas de Ahorro</h3>
-            
-            <button class="btn-primary" @click="abrirModal">Agregar Meta de Ahorro</button>
-            
+            <button class="btn-primary" @click="mostrarModal = true">Agregar Meta de Ahorro</button>
             <div class="metas">
                 <Meta 
-                    v-for="(meta, index) in metas" 
-                    :key="index" 
+                    v-for="meta in metas" 
+                    :key="meta.idMeta" 
+                    :idMeta="meta.idMeta"
                     :title="meta.title" 
                     :ahorro="meta.ahorro" 
                     :progreso="meta.progreso"
                     :inicio="meta.inicio"
                     :fin="meta.fin"
                 />
-            </div>
-        </div>
-    </div>
-
-    <div v-if="mostrarModal" class="modal-overlay" @click.self="mostrarModal = false">
-        <div class="modal-content">
-            <h3>Crear Nueva Meta</h3>
-
-            <div class="form-section">
-                <form class="form" @submit.prevent="guardarMeta" autocomplete="off">
-                    <div class="grid-form">
-                        <div class="form-group">
-                            <label>Nombre de la Meta:</label>
-                            <input v-model="nuevaMeta.title" type="text" placeholder="Ej. Viaje a la playa" required>
-                        </div>  
-                        <div class="form-group">
-                                <label>Fecha Inicio:</label>
-                                <input v-model="nuevaMeta.inicio" type="date" required>
-                        </div>
-                        <div class="form-group">
-                                <label>Fecha Fin:</label>
-                                <input v-model="nuevaMeta.fin" type="date" required>
-                            </div>
-
-                        <div class="form-group">
-                            <label>Monto Objetivo ($):</label>
-                            <input v-model.number="nuevaMeta.ahorro" type="number" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="buttons">
-                        <button type="button" class="btn-cancel" @click="mostrarModal = false">Cancelar</button>
-                        <button type="submit" class="btn-primary">Agregar Meta</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

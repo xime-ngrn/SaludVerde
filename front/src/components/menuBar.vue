@@ -1,28 +1,52 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import Cookies from 'js-cookie'
+import { isAuthenticated, getAuthToken, clearAuthCookies } from '@/utils/cookies'
 
-const router = useRouter();
-const route = useRoute();
-const mobileMenuOpen = ref(false);
+const router = useRouter()
+const route = useRoute()
 
-function inicio() {
-    router.push('/');
-}
-function iniciarSesion() {
-    router.push('/login');
-}
-function registrarse() {
-    router.push('/registro');
-}
-function nosotros() {
-    router.push('/nosotros');
+const mobileMenuOpen = ref(false)
+const profileMenuOpen = ref(false)
+
+const cookies = ref(false)
+const nombre = ref('')
+
+onMounted(() => {
+  cookies.value = isAuthenticated()
+  nombre.value = getAuthToken() || ''
+})
+
+function toggleProfileMenu() {
+  profileMenuOpen.value = !profileMenuOpen.value
 }
 
 function isActive(path) {
-    return route.path === path;
+  return route.path === path
 }
+
+function inicio(){
+    router.push('/')
+}
+function iniciarSesion(){
+    router.push('/login')
+}
+function registrarse(){
+    router.push('registro')
+}
+function verUsuario(){
+    router.push('/usuario')
+}
+
+function cerrarSesion(){
+    clearAuthCookies()
+    cookies.value = false
+    router.push('/')
+}
+
 </script>
+
 
 <template>
     <header class="menu-bar">
@@ -64,24 +88,43 @@ function isActive(path) {
                         @click="mobileMenuOpen = false"
                     >
                         <img src="@/assets/images/money-up.png" class="nav-icon" />
-                        Aprende de Inversiones
+                        Aprende de inversiones
                     </router-link>
                 </li>
                 <li>
-                    <a
+                    <router-link
+                        to="/nosotros"
                         class="menu"
                         :class="{ active: isActive('/nosotros') }"
-                        @click="nosotros(); mobileMenuOpen = false"
+                        @click="mobileMenuOpen = false"
                     >
                         <img src="@/assets/images/equipo.png" class="nav-icon" />
-                        Sobre Nosotros
-                    </a>
+                        Sobre nosotros
+                    </router-link>
                 </li>
             </ul>
         </nav>
-        <div class="inicio" :class="{ open: mobileMenuOpen }">
+
+
+        <div class="inicio" :class="{ open: mobileMenuOpen }" v-if="!cookies">
             <button class="btn-primary" @click="iniciarSesion">Iniciar Sesión</button>
             <button class="btn-secondary" @click="registrarse">Regístrate</button>
+        </div>
+
+        <div class="profile-wrapper" v-if="cookies">
+            <div class="profile" @click="toggleProfileMenu">
+                <img src="@/assets/images/avatar.png" alt="Mi Perfil" class="avatar-profile" />
+                <p>{{ nombre }}</p>
+            </div>
+            
+            <div v-if="profileMenuOpen" class="profile-dropdown">
+                <button @click="verUsuario" class="btn-primary">
+                    Ver Perfil
+                </button>
+                <button @click="cerrarSesion" class="btn-cancel">
+                    Cerrar Sesión
+                </button>
+            </div>
         </div>
     </header>
 </template>
@@ -186,6 +229,52 @@ function isActive(path) {
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.profile {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
+    text-align: center;
+    margin-left: 60px;
+}
+
+.avatar-profile {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--color-2, #4fd1c4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    object-fit: cover;
+    background: #fff;
+}
+
+.profile p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 70%;
+    right: -5%;
+    transform: translateX(-50%);
+    width: 200px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px 0;
 }
 
 @media (max-width: 900px) {

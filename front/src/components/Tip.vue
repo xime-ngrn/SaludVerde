@@ -53,7 +53,7 @@ const tips = ref([
 
 <style scoped>
 .tip {
-    width: 80%;
+    width: auto;
     max-height: 180px;
     display: flex;
     flex-direction: row;

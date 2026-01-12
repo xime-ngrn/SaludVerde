@@ -1,42 +1,39 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 
-const form = reactive ({
-    name: 'Juan',
-    lastname: 'Pérez',
-    age: 20,
-    vocacion: 'Estudiante',
-    gender: 'Hombre',
-    username: 'Juan23',
-    email: 'juan.perez@example.com',
-    password: ''
+const props = defineProps({
+    initialData: Object
 });
+
 const errors = ref({});
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'update-profile', 'error']);
+
+const form = reactive({
+    nombre: props.initialData.nombre || '',
+    apellido: props.initialData.apellido || '',
+    edad: props.initialData.edad || '',
+    vocacion: props.initialData.vocacion || '',
+    username: props.initialData.username || '',
+    email: props.initialData.email || '',
+});
 
 function validateForm() {
     errors.value = {};
-    if (!form.value.name) errors.value.name = 'Nombre requerido';
-    if (!form.value.lastname) errors.value.lastname = 'Apellido requerido';
-    if (!form.value.age || form.value.age <= 0) errors.value.age = 'Edad válida requerida';
-    if (!form.value.vocacion) errors.value.vocacion = 'Vocación requerida';
-    if (!form.value.gender) errors.value.gender = 'Selecciona género';
-    if (!form.value.username) errors.value.username = 'Usuario requerido';
-    if (!form.value.email || !/\S+@\S+\.\S+/.test(form.value.email)) errors.value.email = 'Correo válido requerido';
-    if (!form.value.password || form.value.password.length < 6) errors.value.password = 'Mínimo 6 caracteres';
+    if (!form.nombre) errors.value.name = 'Nombre requerido';
+    if (!form.apellido) errors.value.lastname = 'Apellido requerido';
+    if (!form.edad || form.edad <= 0) errors.value.age = 'Edad válida';
+    if (!form.username) errors.value.username = 'Usuario requerido';
+    if (!form.email) errors.value.email = 'Email requerido';
+    if(!form.vocacion) errors.value.vocacion = 'Vocación requerida';
     return Object.keys(errors.value).length === 0;
 }
 
 const submitEdit = () => {
-    // Aquí puedes añadir validación antes de emitir
     if(!validateForm()){
-        emit('error')
-        return
+        return;
     }
-
-    console.log("Usuario actualizado: ", form.value)
-    emit('close');
+    emit('update-profile', { ...form });
 };
 
 function regresar() {
@@ -55,33 +52,23 @@ function regresar() {
                     <div class="grid-form">
                         <div class="form-group">
                             <label for="name">Nombre</label>
-                            <input type="text" id="name" class="form-control" v-model="form.name" />
+                            <input type="text" id="name" class="form-control" v-model="form.nombre" />
                             <span v-if="errors.name" class="error">{{ errors.name }}</span>
                         </div>
                         <div class="form-group">
                             <label for="lastname">Apellido</label>
-                            <input type="text" id="lastname" class="form-control" v-model="form.lastname" />
+                            <input type="text" id="lastname" class="form-control" v-model="form.apellido" />
                             <span v-if="errors.lastname" class="error">{{ errors.lastname }}</span>
                         </div>
                         <div class="form-group">
                             <label for="age">Edad</label>
-                            <input type="number" id="age" class="form-control" v-model="form.age" min="1" />
+                            <input type="number" id="age" class="form-control" v-model="form.edad" min="1" />
                             <span v-if="errors.age" class="error">{{ errors.age }}</span>
                         </div>
                         <div class="form-group">
                             <label for="vocacion">Vocación</label>
                             <input type="text" id="vocacion" class="form-control" v-model="form.vocacion" />
                             <span v-if="errors.vocacion" class="error">{{ errors.vocacion }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Género</label>
-                            <select id="gender" v-model="form.gender" class="form-control">
-                                <option value="">Selecciona</option>
-                                <option value="male">Masculino</option>
-                                <option value="female">Femenino</option>
-                                <option value="other">Otro</option>
-                            </select>
-                            <span v-if="errors.gender" class="error">{{ errors.gender }}</span>
                         </div>
                         <div class="form-group">
                             <label for="username">Nombre de usuario</label>

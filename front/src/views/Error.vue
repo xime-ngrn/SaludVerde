@@ -1,10 +1,12 @@
 <script setup>
+import { clearAuthCookies } from '@/utils/cookies';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 function logout() {
+    clearAuthCookies();
     router.push('/');
 }
 

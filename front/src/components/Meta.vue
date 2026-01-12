@@ -1,35 +1,54 @@
 <script setup>
 import { ref, computed } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
+    idMeta: { type: Number, required: true },
     title: { type: String, required: true },
     ahorro: { type: Number, required: true },
-    progreso: { type: Number, required: true },
+    progreso: { type: Number, required: true }, // Esto es el monto acumulado
     inicio: { type: [Date, String], required: true },
     fin: { type: [Date, String], required: true }
 });
 
 const isModalOpen = ref(false);
+const montoAbono = ref(0);
 
-// Función para formatear fechas de manera legible
 const formatDate = (date) => {
     if (!date) return '--';
-    const d = new Date(date);
-    return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
-// Cálculo del ahorro necesario por mes
 const ahorroPorMes = computed(() => {
     const start = new Date(props.inicio);
     const end = new Date(props.fin);
     const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-    return months > 0 ? (props.ahorro / months).toFixed(2) : props.ahorro;
+    const result = months > 0 ? (props.ahorro / months) : props.ahorro;
+    return result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 });
 
-// Porcentaje de progreso
 const porcentajeProgreso = computed(() => {
-    return ((props.progreso / props.ahorro) * 100).toFixed(0) + '%';
+    const pct = (props.progreso / props.ahorro) * 100;
+    return Math.min(pct, 100).toFixed(0) + '%';
 });
+
+const realizarAbono = async () => {
+    if (montoAbono.value <= 0) return alert("Monto inválido");
+
+    try {
+        const response = await axios.post('http://127.0.0.1:5000/depositarMeta', {
+            id_meta: parseInt(props.idMeta),
+            monto: parseFloat(montoAbono.value)
+        });
+
+        if (response.data.success) {
+            alert("¡Abono exitoso!");
+            location.reload(); 
+        }
+    } catch (error) {
+        alert("Error 400: Revisa que el ID de la meta sea correcto.");
+    }
+};
 </script>
 
 <template>
@@ -41,39 +60,32 @@ const porcentajeProgreso = computed(() => {
     <div v-if="isModalOpen" class="modal-overlay" @click.self="isModalOpen = false">
         <div class="meta-card-detail">
             <div class="header-modal">
-                <h2 class="modal-title">Meta de Ahorro</h2>
+                <h2 class="modal-title">{{ props.title }}</h2>
                 <button class="close-btn" @click="isModalOpen = false">X</button>
             </div>
-            
             <hr>
-
             <div class="modal-body">
                 <div class="info-column">
-                    <p><strong>Título:</strong> {{ props.title }}</p>
-                    <p><strong>Monto de Ahorro:</strong> $ {{ props.ahorro }}</p>
+                    <p><strong>Meta Final:</strong> $ {{ props.ahorro }}</p>
                     <p><strong>Inicio:</strong> {{ formatDate(props.inicio) }}</p>
                     <p><strong>Término:</strong> {{ formatDate(props.fin) }}</p>
-                    <p><strong>Objetivo:</strong> {{ props.title }}</p>
+                    <p><strong>Progreso:</strong> {{ porcentajeProgreso }}</p>
+                    <p><strong>Ahorro mensual:</strong> $ {{ ahorroPorMes }}</p>
                 </div>
-                
                 <div class="deposit-column">
                     <div class="deposited-box">
-                        <span>Depositado:</span>
+                        <p>Monto Acumulado:</p>
                         <div class="deposited-value">$ {{ props.progreso }}</div>
+                        <div class="abono-input-group">
+                            <input v-model.number="montoAbono" type="number" class="input-abono" placeholder="0.00">
+                            <button @click="realizarAbono" class="btn-abono">Abonar</button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <hr></hr>
-
+            <hr>
             <div class="modal-footer">
-                <div class="footer-stats">
-                    <span>Progreso: <strong>{{ porcentajeProgreso }}</strong></span>
-                    <span>Ahorro por Mes: <strong>$ {{ ahorroPorMes }}</strong></span>
-                </div>
-                <div class="total-badge">
-                    Ahorro Total: $ {{ props.progreso }}
-                </div>
+                <div class="total-badge">Ahorro Total: $ {{ props.progreso }}</div>
             </div>
         </div>
     </div>
@@ -114,7 +126,8 @@ const porcentajeProgreso = computed(() => {
     border: 4px dashed var(--color-1); /* Borde punteado azul */
     border-radius: 50px;
     padding: 30px 50px;
-    width: 600px;
+    width: 650px;
+    height: auto;
     position: relative;
     color: #1e293b;
 }
@@ -145,6 +158,36 @@ h2 {
     color: #e53e3e;
 }
 
+.abono-input-group {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-abono {
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.btn-abono {
+    background-color: var(--color-2);
+    color: #000;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.5s;
+}
+
+.btn-abono:hover {
+    color: #ffffff;
+    background-color: var(--color-1);
+}
 
 .modal-body {
     display: flex;
@@ -166,7 +209,7 @@ h2 {
     border-radius: 20px;
     padding: 20px;
     width: 220px;
-    height: 200px;
+    height: auto;
     display: flex;
     flex-direction: column;
     font-weight: bold;

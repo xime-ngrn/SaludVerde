@@ -1,29 +1,71 @@
 <script setup>
 import { ref, computed } from 'vue';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const props = defineProps({
+    idReporte: { type: Number }, // Nuevo prop
     title: { type: String, required: true },
     gastos: { type: Number, required: true },
     ingresos: { type: Number, required: true }
 });
 
+const detalles = ref([]);
 const isModalOpen = ref(false);
 
-// Datos de ejemplo para la tabla (puedes pasarlos por props después)
-const detalles = [
-    { titulo: 'Tareas Vendidas', ingreso: 169, gasto: null },
-    { titulo: 'Gasto Semanal', ingreso: 323, gasto: null },
-    { titulo: 'Dulces Semana 1', ingreso: 65, gasto: null },
-    { titulo: 'Desayuno', ingreso: null, gasto: 96 },
-    { titulo: 'Cena Romántica', ingreso: null, gasto: 321 },
-    { titulo: 'Transporte', ingreso: null, gasto: 54 },
-];
+const fetchDetalles = async () => {
+    try {
+        const res = await axios.get(`http://127.0.0.1:5000/obtenerDetallesReporte?id=${props.idReporte}`);
+        detalles.value = res.data; // Registros de la tabla 'Registro'
+    } catch (e) {
+        console.error("Error al obtener detalles", e);
+    }
+};
+
+const abrirDetalles = () => {
+    isModalOpen.value = true;
+    if (props.idReporte) fetchDetalles();
+};
 
 const totalBalance = computed(() => props.ingresos - props.gastos);
+
+const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text(`Reporte Mensual: ${props.title}`, 14, 22);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
+
+    const tableData = detalles.value.map(item => [
+        item.titulo,
+        item.ingreso ? `$${item.ingreso}` : '-',
+        item.gasto ? `$${item.gasto}` : '-'
+    ]);
+
+    autoTable(doc, {
+        startY: 40,
+        head: [['Título', 'Ingreso', 'Gasto']],
+        body: tableData,
+        foot: [['TOTALES', `$${props.ingresos}`, `$${props.gastos}`]],
+        theme: 'striped',
+        headStyles: { fillColor: [59, 130, 246] },
+        footStyles: { fillColor: [241, 245, 249], textColor: [0, 0, 0], fontStyle: 'bold' }
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(14);
+    doc.setTextColor(totalBalance.value >= 0 ? 0 : 200, 0, 0);
+    doc.text(`Balance Total: $${totalBalance.value}`, 14, finalY);
+
+    doc.save(`Reporte_${props.title.replace(/\s+/g, '_')}.pdf`);
+};
 </script>
 
 <template>
-    <div class="reporte" @click="isModalOpen = true">
+    <div class="reporte" @click="abrirDetalles">
         <img src="@/assets/images/reporte.png" alt="Icon" class="reporte-icon" />
         <h4>{{ props.title }}</h4>
     </div>
@@ -34,7 +76,7 @@ const totalBalance = computed(() => props.ingresos - props.gastos);
             <div class="report-card-detail">
                 <button class="close-btn" @click="isModalOpen = false">X</button>
 
-                <h2 class="report-title">{{ props.title }}/2025</h2>
+                <h2 class="report-title">{{ props.title }}</h2>
 
                 <table class="report-table">
                     <thead>
@@ -45,6 +87,9 @@ const totalBalance = computed(() => props.ingresos - props.gastos);
                         </tr>
                     </thead>
                     <tbody>
+                        <tr v-if="detalles.length === 0">
+                            <td colspan="3">No hay movimientos en este mes.</td>
+                        </tr>
                         <tr v-for="(item, index) in detalles" :key="index">
                             <td>{{ item.titulo }}</td>
                             <td>{{ item.ingreso ? '$ ' + item.ingreso : '' }}</td>
@@ -58,14 +103,14 @@ const totalBalance = computed(() => props.ingresos - props.gastos);
                     </tbody>
                 </table>
 
-                <div class="total-badge">
-                    Total: $ {{ totalBalance }}
+                <div class="total-badge" :class="totalBalance >= 0 ? 'positivo' : 'negativo'">
+                    Balance: $ {{ totalBalance }}
                 </div>
             </div>
 
             <div class="modal-actions">
-                <button class="btn-primary">
-                    Exportar a Excel
+                <button class="btn-primary" @click="exportToPDF">
+                    Exportar a PDF
                 </button>
             </div>
         </div>
@@ -172,6 +217,16 @@ img.reporte-icon {
     width: fit-content;
     font-size: 1.3rem;
     font-weight: bold;
+}
+.total-badge.positivo {
+    background-color: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+.total-badge.negativo {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #991b1b;
 }
 
 /* Botones Inferiores */

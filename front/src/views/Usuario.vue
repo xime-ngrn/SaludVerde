@@ -1,37 +1,64 @@
 <script setup>
-import { ref, reactive } from 'vue';
-import Menu from '@/components/MenuBar2.vue';
+import { ref, onMounted } from 'vue';
+import Menu from '@/components/MenuBar.vue';
 import Options from '@/components/OptionsBar.vue';
-// 💡 Necesitas crear este componente Modal
 import EditProfileModal from '@/components/EditarUsuario.vue'; 
+import { getAuthToken } from '@/utils/cookies';
 
-// Datos del usuario (simulados)
-const userData = reactive({
-    nombre: 'Juan',
-    apellido: 'Pérez',
-    username: 'Juan23',
-    email: 'juan.perez@example.com',
-    fechaRegistro: '15 de Marzo, 2023',
-    vocacion: 'Estudiante',
-    edad: 20,
-});
+const userData = ref({});
+const currentUser = getAuthToken();
+const error = ref('');
 
-// 1. Estado reactivo para controlar el modal
+const fetchUserData = async () => {
+    error.value = '';
+
+    if (!currentUser) return;
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/usuario?username=${currentUser}`);
+        const data = await response.json();
+        userData.value = data;
+        error.value = null;
+    } catch (error) {
+        error.value = "Error al cargar los datos del usuario.";
+    }
+};
+
+const handleUpdate = async (updatedForm) => {
+    error.value = '';
+
+    try {
+        const dataToSend = { 
+            ...updatedForm, 
+            username: userData.value.username 
+        };
+
+        const response = await fetch('http://127.0.0.1:5000/update_usuario', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataToSend)
+        });
+
+        if (response.ok) {
+            alert("Cambios guardados");
+            isModalOpen.value = false;
+            fetchUserData();
+        }
+    } catch (error) {
+        error.value = "Error al guardar los cambios.";
+        alert("Error al guardar los cambios");
+        console.error("Error en la petición:", error);
+    }
+};
+
+onMounted(fetchUserData);
+
 const isModalOpen = ref(false);
-
-// 2. Lógica para abrir/cerrar el modal
-const openModal = () => {
-    isModalOpen.value = true;
-};
-
-const closeModal = () => {
-    isModalOpen.value = false;
-};
+const openModal = () => isModalOpen.value = true;
+const closeModal = () => isModalOpen.value = false;
 </script>
 
 <template>
     <Menu />
-    
     <div class="home-container">
         <Options />
 
@@ -41,6 +68,7 @@ const closeModal = () => {
             <button @click="openModal" class="btn-primary">Modificar Información</button>
             
             <div class="container">
+                <span v-if="error" class="error">{{ error }}</span>
                 <p><strong>Nombre:</strong> {{ userData.nombre }} {{ userData.apellido }}</p>
                 <p><strong>Nombre de Usuario:</strong> {{ userData.username }}</p>
                 <p><strong>Email:</strong> {{ userData.email }}</p>
@@ -70,14 +98,12 @@ const closeModal = () => {
     overflow: hidden;
 }
 .home {
-    /* Ajustes para un diseño vertical más limpio en la sección de info */
     width: 100%;
-    /* Removido height: 100vh; y overflow: hidden; para permitir scroll si es necesario */
     display: flex;
-    flex-direction: column; /* Apila elementos verticalmente */
+    flex-direction: column;
     padding: 20px;
-    align-items: flex-start; /* Alinea los elementos a la izquierda (inicio) */
-    font-size: 1rem; /* Ajuste para mejor lectura */
+    align-items: flex-start;
+    font-size: 1rem;
     color: #334155;
 }
 .container {
@@ -94,6 +120,16 @@ const closeModal = () => {
 
 h3 {
     align-self: center;
+}
+.error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    width: 100%;
 }
 
 .btn-primary {

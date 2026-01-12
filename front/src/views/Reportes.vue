@@ -1,15 +1,35 @@
 <script setup>
-import { ref } from 'vue';
-import Menu from '@/components/MenuBar2.vue';
+import { ref, onMounted } from 'vue';
+import Menu from '@/components/MenuBar.vue';
 import Options from '@/components/OptionsBar.vue';
 import Reporte from '@/components/Reporte.vue';
+import { getAuthToken } from '@/utils/cookies';
+import axios from 'axios';
 
-const reportes = ref([
-    { title: 'Mayo', gastos: 1200, ingresos: 3000 },
-    { title: 'Junio', gastos: 3500, ingresos: 9000 },
-    { title: 'Julio', gastos: 15000, ingresos: 36000 },
-    { title: 'Agosto', gastos: 2000, ingresos: 3800 }
-]);
+const reportes = ref([]);
+const currentUser = getAuthToken();
+const error = ref('');
+
+const fetchReportes = async () => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:5000/obtenerReportes?username=${currentUser}`);
+        
+        // 🔧 CORREGIDO: Procesar los datos para calcular ingresos y gastos
+        reportes.value = response.data.reportes.map(reporte => ({
+            idReporte: reporte.Id_reporte, // 🔧 AGREGADO: ID del reporte
+            title: reporte.Nombre,
+            gastos: reporte.total_gastos || 0,
+            ingresos: reporte.total_ingresos || 0
+        }));
+        
+        console.log("Reportes cargados:", reportes.value);
+    } catch (e) {
+        error.value = 'Error al cargar los reportes.';
+        console.error("Error cargando reportes", e);
+    }
+};
+
+onMounted(fetchReportes);
 
 const mostrarModal = ref(false);
 const nuevoReporte = ref({
@@ -23,17 +43,31 @@ function abrirModal() {
     mostrarModal.value = true;
 }
 
-function guardarReporte() {
-    if (nuevoReporte.value.title) {
-        // Agregamos una copia del objeto al arreglo reactivo
-        reportes.value.push({ ...nuevoReporte.value });
+async function guardarReporte() {
+    if (!nuevoReporte.value.title.trim()) {
+        alert('El título es obligatorio');
+        return;
+    }
+
+    try {
+        // 🔧 AGREGADO: Guardar el reporte en el backend
+        const response = await axios.post('http://127.0.0.1:5000/crearReporte', {
+            username: currentUser,
+            nombre: nuevoReporte.value.title
+        });
+
+        console.log("Reporte creado:", response.data);
         
+        // Recargar reportes
+        await fetchReportes();
+        
+        // Cerrar modal
         mostrarModal.value = false;
-        
-        console.log("Reporte agregado correctamente");
+    } catch (e) {
+        console.error("Error al crear reporte", e);
+        alert('Error al crear el reporte');
     }
 }
-
 </script>
 
 <template>
@@ -43,12 +77,27 @@ function guardarReporte() {
         <Options />
 
         <div class="home">
-            <h3>Reportes Mensuales</h3>
-
-            <button class="btn-primary" @click="abrirModal">Agregar Reporte</button>
+            <div class="header">
+                <h3>Reportes Mensuales</h3>
+                <button class="btn-primary" @click="abrirModal">+ Nuevo Reporte</button>
+            </div>
+            
+            <span v-if="error" class="error">{{ error }}</span>
             
             <div class="reportes">
-                <Reporte v-for="(reporte, index) in reportes" :key="index" :title="reporte.title" :gastos="reporte.gastos" :ingresos="reporte.ingresos" />
+                <Reporte 
+                    v-for="reporte in reportes" 
+                    :key="reporte.idReporte"
+                    :idReporte="reporte.idReporte"
+                    :title="reporte.title" 
+                    :gastos="reporte.gastos" 
+                    :ingresos="reporte.ingresos" 
+                />
+                
+                <div v-if="reportes.length === 0" class="empty-state">
+                    <p>No hay reportes aún</p>
+                    <button class="btn-primary" @click="abrirModal">Crear primer reporte</button>
+                </div>
             </div>
         </div>
     </div>
@@ -60,17 +109,15 @@ function guardarReporte() {
             <div class="form-section">
                 <form class="form" @submit.prevent="guardarReporte" autocomplete="off">
                     <div class="grid-form">
-                        <div class="form-group">
+                        <div class="form-group full-width">
                             <label>Mes / Título:</label>
-                            <input v-model="nuevoReporte.title" type="text" placeholder="Ej. Septiembre" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Ingresos ($):</label>
-                            <input v-model.number="nuevoReporte.ingresos" type="number" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label>Gastos ($):</label>
-                            <input v-model.number="nuevoReporte.gastos" type="number" min="0">
+                            <input 
+                                v-model="nuevoReporte.title" 
+                                type="text" 
+                                placeholder="Ej. Enero 2026" 
+                                required
+                                class="form-control"
+                            >
                         </div>
                     </div>
 
@@ -92,33 +139,52 @@ function guardarReporte() {
     min-height: 100vh; 
     overflow-y: auto;
 }
+
 .home {
     width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
     color: #334155;
     padding: 40px;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h3 {
+    font-size: 1.5rem;
+}
+
 .reportes {
     flex-grow: 1;
-    padding: 20px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
+    justify-content: flex-start;
     align-content: flex-start;
-    font-size: 1.5rem;
-    color: #334155;
     overflow-y: auto;
-    height: auto;
-    max-height: 100vh;
+    max-height: calc(100vh - 200px);
 }
-.btn-primary {
-    align-self: flex-end;
+
+.empty-state {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 60px 20px;
+    color: #64748b;
+}
+
+.error {
+    color: #e74c3c;
+    margin-bottom: 20px;
 }
 
 .modal-overlay {
@@ -142,6 +208,10 @@ function guardarReporte() {
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+
 .form-section {
     width: 100%;
 }
@@ -152,23 +222,26 @@ function guardarReporte() {
 
 .grid-form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px 24px;
+    grid-template-columns: 1fr;
+    gap: 18px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    position: relative;
+}
+
+.full-width {
+    grid-column: 1 / -1;
 }
 
 label {
     font-weight: 600;
     margin-bottom: 6px;
+    font-size: 0.95rem;
 }
 
 .form-control {
-    max-width: 300px;
     padding: 10px;
     border-radius: 6px;
     border: 1px solid #bbb;
@@ -188,32 +261,27 @@ label {
     justify-content: space-evenly;
     align-items: center;
     margin-top: 25px;
+    gap: 10px;
 }
 
 @media (max-width: 900px) {
     .home-container {
-        flex-direction: column; /* Mobile: OptionsBar arriba de Home */
-        overflow-y: auto; /* El scroll lo manejará el container principal */
-    }
-
-    /* 💡 Ocultar OptionsBar para mobile. 
-       Esto usualmente se maneja haciendo el Options un componente de menú de hamburguesa. */
-    .options-bar {
-        /* Para simular que Options se convierte en una barra horizontal o se oculta. 
-           Si no lo vas a ocultar, asegúrate de que no tenga un 'width' fijo. */
-        width: 100%;
-        min-height: auto;
-        /* display: none; */ 
+        flex-direction: column;
+        overflow-y: auto;
     }
 
     .home {
-        padding: 10px;
-        /* En mobile, puede ser mejor que los reportes ocupen todo el ancho para una mejor lectura. */
-        justify-content: center; 
+        padding: 20px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
     }
     
-    /* Si el componente Reporte no es flexible, hazlo 100% de ancho en mobile. */
-    /* Aquí necesitarías saber la clase raíz del componente Reporte. 
-       Ejemplo: .reporte-card { width: 100%; } */
+    .reportes {
+        justify-content: center;
+    }
 }
 </style>

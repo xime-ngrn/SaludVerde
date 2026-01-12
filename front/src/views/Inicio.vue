@@ -19,9 +19,13 @@ function registrarse() {
 
       <div class="hero-card">
         <div class="hero-left">
-          <h2>El 75% de los adolescentes no tienen un conocimiento de finanzas personales</h2>
+          <div class="slogan">
+            <h2 class="izq">Tu dinero</h2>
+            <h2 class="cnt">Tus reglas</h2>
+            <h2 class="der">Tu futuro</h2>
+          </div>
           <p class="hero-text">
-            Aprender a manejar el dinero desde joven es una de las decisiones más inteligentes que puedes tomar.
+            Aprender a manejar el dinero desde joven es una de las decisiones más inteligentes que puedes tomar. Aprende con nosotros todos los beneficios que te provee empezar en el mundo de las finanzas personales desde joven.
           </p>
           <button class="btn-primary" @click="registrarse">Empieza ahora</button>
         </div>
@@ -102,7 +106,6 @@ function registrarse() {
   margin: 0 auto;
   background: #fff;
   border-radius: 24px;
-  padding: 40px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -120,6 +123,26 @@ function registrarse() {
   text-align: left;
   justify-content: center;
 }
+
+.slogan {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 5px;
+}
+.izq {
+  margin: 0px;
+  text-align: left;
+}
+.cnt {
+  margin: 0px;
+  text-align: center;
+}
+.der {
+  margin: 0px;
+  text-align: right;
+}
+
 .hero-text {
   font-size: 20px;
   color: #444;
@@ -244,6 +267,7 @@ function registrarse() {
   display: block;
   margin: 48px auto 0 auto;
 }
+
 
 /* Responsive Design */
 @media (max-width: 900px) {
