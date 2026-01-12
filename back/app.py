@@ -13,13 +13,12 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_cred
 load_dotenv()
 
 # Configuración de la base de datos MySQL
-app.config['MYSQL_HOST'] = os.getenv('DATABASE_HOST')
-app.config['MYSQL_USER'] = os.getenv('DATABASE_USER')
-app.config['MYSQL_PASSWORD'] = os.getenv('DATABASE_PASSWORD')
-app.config['MYSQL_DB'] = os.getenv('DATABASE_NAME')
+app.config['Host'] = os.environ.get('MYSQL_HOST')
+app.config['Username'] = os.environ.get('MYSQL_USER')
+app.config['Password'] = os.environ.get('MYSQL_PASSWORD')
+app.config['Database'] = os.environ.get('MYSQL_DB')
 
 mysql = MySQL(app)
-
 # Inicio de prueba al backend
 @app.route('/')
 def index():
