@@ -8,7 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import MySQLdb.cursors
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+app = Flask(__name__, 
+            static_folder='dist/assets', 
+            template_folder='dist')
 
 load_dotenv()
 
